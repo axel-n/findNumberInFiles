@@ -1,6 +1,6 @@
-package com.example.findNumber.repository;
+package com.example.findNumber.processingData.repository;
 
-import com.example.findNumber.model.Result;
+import com.example.findNumber.processingData.model.Result;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.example.findNumber.model;
+package com.example.findNumber.processingData.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

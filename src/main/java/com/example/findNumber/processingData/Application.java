@@ -1,4 +1,4 @@
-package com.example.findNumber;
+package com.example.findNumber.processingData;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

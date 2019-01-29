@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class Run {
 
-    private final static Logger log = LoggerFactory.getLogger("Run");
+    private final static Logger log = LoggerFactory.getLogger(Run.class);
 
     public static void main(String[] args) {
         GenerateData.generateFiles();
