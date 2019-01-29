@@ -8,3 +8,4 @@
 *.attach_pid*
 
 logs/
+files/
