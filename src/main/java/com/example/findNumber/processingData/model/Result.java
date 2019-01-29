@@ -56,5 +56,8 @@ public class Result {
         this.error = error;
     }
 
-
+    @Override
+    public String toString() {
+        return String.format("{id %s, code %s, fileNames %s, error %s}", id, code, fileNames, error);
+    }
 }
