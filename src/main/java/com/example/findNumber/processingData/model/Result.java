@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.ArrayList;
 
 @Entity
 public class Result {
@@ -13,7 +14,7 @@ public class Result {
     private int id;
     private Code code;
     private int number;
-    private String fileNames;
+    private ArrayList<String> fileNames = new ArrayList<>();
     private String error;
 
     public enum Code {
@@ -40,12 +41,12 @@ public class Result {
         this.number = number;
     }
 
-    public String getFileNames() {
+    public ArrayList<String> getFileNames() {
         return fileNames;
     }
 
     public void setFileNames(String fileNames) {
-        this.fileNames = fileNames;
+        this.fileNames.add(fileNames);
     }
 
     public String getError() {

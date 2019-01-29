@@ -25,10 +25,9 @@ public class FindNumberController {
     public Result findFilesByNumber(@PathVariable("number") Integer number) {
 
         Result result = service.findNumber(number);
-        Result resultSave  = repository.save(result);
+        repository.save(result);
 
-        log.info("result in files: {}", result.toString());
-        log.info("result save in bd: {}", resultSave.toString());
+        log.info("find result: {}", result.toString());
 
         return result;
     }
