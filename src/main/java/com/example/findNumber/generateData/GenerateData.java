@@ -10,12 +10,16 @@ class GenerateData {
     private static Random rnd = new Random();
     private static final String PATH = "./files/";
 
-    // ~ 110Mb every file
-    private static final int MAX_LINES_IN_FILE = 1_000_000;
+    // ~ 1Gb для каждого файла
+    private static final int MAX_LINES_IN_FILE = 10_000_000;
     private static final int MAX_NUMBERS_IN_LINE = 10;
 
     private static final int MAX_FILES = 20;
 
+
+    /**
+     * управляет созданием файлов
+     */
     static void generateFiles() {
 
         StringBuilder line;
@@ -42,6 +46,11 @@ class GenerateData {
         }
     }
 
+
+    /**
+     * @param fileContent содержимое для файла
+     * @param fileName имя будущего файла
+     */
     private static void save(StringBuilder fileContent, String fileName) {
 
         BufferedWriter writer;
@@ -56,6 +65,9 @@ class GenerateData {
 
     }
 
+    /**
+     * @return случайное число
+     */
     private static int generateNumber() {
         return rnd.nextInt();
     }

@@ -37,13 +37,4 @@ public class FindNumberController {
 
         return result;
     }
-
-    @RequestMapping(value = "/result/{id}")
-    public Result findResultById(@PathVariable("id") int id) {
-
-        Result result = repository.findById(id);
-        log.info("result in bd: {}", result);
-
-        return result;
-    }
 }

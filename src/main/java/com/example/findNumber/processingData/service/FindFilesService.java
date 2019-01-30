@@ -5,8 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -19,10 +23,19 @@ public class FindFilesService {
 
     private final static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
+    /**
+     * @param number поиск числа
+     * @return Result
+     */
     public Result findNumber(Integer number) {
         return run(number);
     }
 
+    /**
+     * управляет потокам
+     * @param number поиск числа
+     * @return Result
+     */
     private Result run(Integer number) {
         File path = new File("./files");
         result = new Result();
@@ -38,12 +51,15 @@ public class FindFilesService {
         }
         waitThreads();
 
-        // save result fileNames
+        // запоминаем имена файлов, где нашли совпадения
         for (Map.Entry<Future, String> entry : futures.entrySet()) {
             try {
-                // find 'true'
                 if ((Boolean) entry.getKey().get()) {
-                    result.setFileNames(entry.getValue());
+
+                    List<String> listNames = result.getFileNames();
+                    listNames.add(entry.getValue());
+
+                    result.setFileNames(listNames);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -63,6 +79,9 @@ public class FindFilesService {
 
     }
 
+    /**
+     * ждем потоки
+     */
     private void waitThreads() {
         try {
             EXECUTOR_SERVICE.awaitTermination(10L, TimeUnit.SECONDS);
@@ -71,10 +90,20 @@ public class FindFilesService {
         }
     }
 
+    /**
+     * @param fileName имя файла для поиска
+     * @param number поиск числа
+     * @return Future
+     */
     private Future<?> runTask(String fileName, Integer number) {
         return EXECUTOR_SERVICE.submit(() ->  isFileContainsNumber(fileName, number));
     }
 
+    /**
+     * @param fileName имя файла
+     * @param number число для поиска
+     * @return если нашли совпадение, true
+     */
     private boolean isFileContainsNumber(String fileName, Integer number) {
         log.info("start processing file {}", fileName);
 
@@ -97,6 +126,7 @@ public class FindFilesService {
             }
 
         } catch (IOException e) {
+            // если запоминать на этапе создания runTask, обработка прерывается
             log.error("получили ошибку {}. запоминаем", e.getMessage());
             result.setError(e.getMessage());
             result.setCode(Result.Code.Error);
