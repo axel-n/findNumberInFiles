@@ -9,10 +9,12 @@ class GenerateData {
 
     private static Random rnd = new Random();
     private static final String PATH = "./files/";
-    private static final int MAX_LINES_IN_FILE = 10;
-    private static final int MAX_FILES = 2;
-    private static final int MAX_NUMBERS_IN_LINE = 5;
 
+    // ~ 110Mb every file
+    private static final int MAX_LINES_IN_FILE = 1_000_000;
+    private static final int MAX_NUMBERS_IN_LINE = 10;
+
+    private static final int MAX_FILES = 20;
 
     static void generateFiles() {
 
