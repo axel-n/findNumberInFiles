@@ -2,7 +2,7 @@ package com.example.findNumber.processingData.controller;
 
 import com.example.findNumber.processingData.model.Result;
 import com.example.findNumber.processingData.repository.ResultRepository;
-import com.example.findNumber.processingData.service.FindFilesParalleService;
+import com.example.findNumber.processingData.service.FindFilesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class FindNumberController {
     private ResultRepository repository;
 
     @Autowired
-    private FindFilesParalleService service;
+    private FindFilesService service;
 
     @RequestMapping(value = "/find/{number}")
     public Result findFilesByNumber(@PathVariable("number") Integer number) {

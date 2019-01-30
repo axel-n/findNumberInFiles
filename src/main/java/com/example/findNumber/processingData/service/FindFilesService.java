@@ -5,20 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
 
-
 @Service
-public class FindFilesParalleService {
+public class FindFilesService {
 
-    private static final Logger log = LoggerFactory.getLogger(FindFilesParalleService.class);
+    private final Logger log = LoggerFactory.getLogger(FindFilesService.class);
+    private Result result;
 
     private final static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
@@ -28,12 +25,13 @@ public class FindFilesParalleService {
 
     private Result run(Integer number) {
         File path = new File("./files");
-        Result result = new Result();
+        result = new Result();
         HashMap<Future, String> futures = new HashMap<>();
+        String fileName;
 
         for (File file : Objects.requireNonNull(path.listFiles())) {
 
-            String fileName = path + "/" + file.getName();
+            fileName = path + "/" + file.getName();
 
             Future future = runTask(fileName, number);
             futures.put(future, fileName);
@@ -52,13 +50,13 @@ public class FindFilesParalleService {
             }
         }
 
-
-        if (result.getFileNames().size() > 0) {
-            result.setCode(Result.Code.OK);
-        } else {
-            result.setCode(Result.Code.NotFound);
+        if (result.getError() == null) {
+            if (result.getFileNames().size() > 0) {
+                result.setCode(Result.Code.OK);
+            } else {
+                result.setCode(Result.Code.NotFound);
+            }
         }
-
         result.setNumber(number);
 
         return result;
@@ -73,13 +71,11 @@ public class FindFilesParalleService {
         }
     }
 
-    private Future<Boolean> runTask(String fileName, Integer number) {
-        Future<Boolean> future = EXECUTOR_SERVICE.submit(() -> isFileContainsNumber(fileName, number));
-
-        return future;
+    private Future<?> runTask(String fileName, Integer number) {
+        return EXECUTOR_SERVICE.submit(() ->  isFileContainsNumber(fileName, number));
     }
 
-    private boolean isFileContainsNumber(String fileName, Integer number) throws IOException {
+    private boolean isFileContainsNumber(String fileName, Integer number) {
         log.info("start processing file {}", fileName);
 
         BufferedReader br;
@@ -87,17 +83,23 @@ public class FindFilesParalleService {
         boolean complete = false;
 
         // read file
-        br = new BufferedReader(new FileReader(fileName));
+        try {
+            br = new BufferedReader(new FileReader(fileName));
+            while ((line = br.readLine()) != null && !complete) {
+                String[] numbers = line.split(",");
 
-        while ((line = br.readLine()) != null && !complete) {
-            String[] numbers = line.split(",");
-
-            for (String item : numbers) {
-                if (number.equals(Integer.valueOf(item))) {
-                    log.info("нашли число {}, в файле {}. запоминаем", number, fileName);
-                    complete = true;
+                for (String item : numbers) {
+                    if (number.equals(Integer.valueOf(item))) {
+                        log.info("нашли число {}, в файле {}. запоминаем", number, fileName);
+                        complete = true;
+                    }
                 }
             }
+
+        } catch (IOException e) {
+            log.error("получили ошибку {}. запоминаем", e.getMessage());
+            result.setError(e.getMessage());
+            result.setCode(Result.Code.Error);
         }
         return complete;
     }
