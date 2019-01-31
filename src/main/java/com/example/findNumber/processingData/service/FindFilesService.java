@@ -43,11 +43,13 @@ public class FindFilesService {
         String fileName;
 
         for (File file : Objects.requireNonNull(path.listFiles())) {
+            if (file.getName().contains(".txt")) {
 
-            fileName = path + "/" + file.getName();
+                fileName = path + "/" + file.getName();
 
-            Future future = runTask(fileName, number);
-            futures.put(future, fileName);
+                Future future = runTask(fileName, number);
+                futures.put(future, fileName);
+            }
         }
         waitThreads();
 
